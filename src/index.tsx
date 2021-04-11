@@ -6,6 +6,8 @@ import reportWebVitals from "./reportWebVitals";
 import * as serviceWorker from "./serviceWorker";
 import { ApolloProvider } from "@apollo/client/react";
 import { ApolloClient, InMemoryCache } from "@apollo/client";
+import "react-day-picker/lib/style.css";
+import "./style.css";
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_URL,

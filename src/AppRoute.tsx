@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import FallbackProgress from "./FallbackProgress";
 
 const Dashboard = lazy(() => import("./Dashboard"));
+const AddTransaction = lazy(() => import("./AddTransaction"));
 
 const AppRoute: React.FC<{}> = () => (
   <Router>
@@ -16,6 +17,7 @@ const AppRoute: React.FC<{}> = () => (
     >
       <Switch>
         <Route path="/" exact component={Dashboard} />
+        <Route path="/transaction/add" component={AddTransaction} />
       </Switch>
     </Suspense>
   </Router>

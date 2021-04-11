@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { FiPlus } from "react-icons/fi";
 import { gql, useQuery } from "@apollo/client";
+import { Link } from "react-router-dom";
 
 import FallbackProgress from "./FallbackProgress";
 
@@ -50,7 +51,6 @@ const Dashboard: React.FC<{}> = () => {
       </Box>
       <Box
         borderRadius="lg"
-        overflow="hidden"
         bgColor="white"
         boxShadow="sm"
         maxW="3xl"
@@ -78,15 +78,17 @@ const Dashboard: React.FC<{}> = () => {
               </Box>
             </Flex>
             <Tooltip hasArrow label="Add transaction" placement="right">
-              <Button
-                colorScheme="blue"
-                p="3"
-                borderRadius="lg"
-                as="button"
-                size="24"
-              >
-                <FiPlus color="#ffffff" fontWeight="bold" />
-              </Button>
+              <Link to="/transaction/add">
+                <Button
+                  colorScheme="blue"
+                  p="3"
+                  borderRadius="lg"
+                  as="button"
+                  size="24"
+                >
+                  <FiPlus color="#ffffff" fontWeight="bold" />
+                </Button>
+              </Link>
             </Tooltip>
           </Flex>
           <Divider orientation="horizontal" my="4" />
@@ -129,7 +131,6 @@ const Dashboard: React.FC<{}> = () => {
       ) : (
         <Box
           borderRadius="lg"
-          overflow="hidden"
           bgColor="white"
           boxShadow="sm"
           maxW="3xl"
@@ -164,7 +165,7 @@ const Dashboard: React.FC<{}> = () => {
                           isTruncated
                           lineHeight="tight"
                         >
-                          {transaction.transactionDate}
+                          {new Date(transaction.transactionDate).toDateString()}
                         </Box>
                       </Flex>
                     </Flex>
