@@ -1,7 +1,7 @@
 import React from "react";
 import { Spinner } from "@chakra-ui/react";
 
-const FallbackProgress: React.FC<{}> = () => (
+const FallbackProgress = (): JSX.Element => (
   <Spinner
     size="xl"
     thickness="4px"

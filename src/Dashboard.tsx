@@ -33,7 +33,7 @@ const RECENT_TRANSACTIONS = gql`
   }
 `;
 
-const Dashboard: React.FC<{}> = () => {
+const Dashboard = () => {
   const { loading, data } = useQuery(RECENT_TRANSACTIONS);
 
   return (

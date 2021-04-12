@@ -6,7 +6,7 @@ import FallbackProgress from "./FallbackProgress";
 const Dashboard = lazy(() => import("./Dashboard"));
 const AddTransaction = lazy(() => import("./AddTransaction"));
 
-const AppRoute: React.FC<{}> = () => (
+const AppRoute = (): JSX.Element => (
   <Router>
     <Suspense
       fallback={
