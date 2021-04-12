@@ -74,7 +74,7 @@ const Dashboard = () => {
                 Your current budget
               </Box>
               <Box as="h3" lineHeight="tight" fontWeight="bold" fontSize="3xl">
-                Rp 3.500.000,00
+                Rp 3.500.000
               </Box>
             </Flex>
             <Tooltip hasArrow label="Add transaction" placement="right">
@@ -105,7 +105,7 @@ const Dashboard = () => {
                   {category}
                 </Box>
                 <Box as="h3" lineHeight="tight" fontWeight="bold" fontSize="xl">
-                  Rp 500.000,00
+                  Rp 500.000
                 </Box>
               </Flex>
             ))}

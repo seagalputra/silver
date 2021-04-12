@@ -16,10 +16,12 @@ import {
   UseRadioProps,
   useRadioGroup,
   HStack,
+  FormHelperText,
 } from "@chakra-ui/react";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import { FiArrowLeft } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 type RadioCardProps = {
   children?: React.ReactNode;
@@ -39,7 +41,6 @@ const RadioCard = (props: RadioCardProps & UseRadioProps): JSX.Element => {
         cursor="pointer"
         borderWidth="1px"
         borderRadius="md"
-        boxShadow="md"
         _checked={{
           bg: "blue.500",
           color: "white",
@@ -57,19 +58,30 @@ const RadioCard = (props: RadioCardProps & UseRadioProps): JSX.Element => {
   );
 };
 
+interface IAddTransction {
+  title: string;
+  amount: number;
+  transactionDate: string;
+  description: string;
+  category: string;
+  transactionStatus: string;
+}
+
 const AddTransaction = (): JSX.Element => {
   const transactionCategory = ["Needs", "Wants", "Invest"];
-  const transactionStatus = ["Income", "Outcome"];
+  const { register, handleSubmit } = useForm<IAddTransction>();
 
   const { getRootProps, getRadioProps } = useRadioGroup({
-    name: "transactionStatus",
-    defaultValue: "Income",
+    name: "transactionCategory",
+    defaultValue: "Needs",
     onChange: console.log,
   });
   const group = getRootProps();
 
+  const onSubmit = (data: IAddTransction) => console.log(data);
+
   return (
-    <Center fontSize="xl" margin="36" flexDirection="column">
+    <Center fontSize="xl" margin="24" flexDirection="column">
       <Box maxW="3xl" w="full">
         <Flex alignItems="center">
           <Tooltip hasArrow label="Back to dashboard" placement="top">
@@ -91,68 +103,66 @@ const AddTransaction = (): JSX.Element => {
         mt="6"
       >
         <Box p="6">
-          <FormControl id="transactionCategory" mt="4">
-            <FormLabel>Select </FormLabel>
-            <HStack {...group}>
-              {transactionStatus.map((value) => {
-                const radio = getRadioProps({
-                  value,
-                  enterKeyHint: "defaultValue",
-                });
-                return (
-                  <RadioCard key={value} {...radio}>
-                    {value}
-                  </RadioCard>
-                );
-              })}
-            </HStack>
-          </FormControl>
-          <FormControl id="title" isRequired mt="4">
-            <FormLabel>Title</FormLabel>
-            <Input placeholder="Title" variant="filled" />
-          </FormControl>
-          <FormControl id="amount" isRequired mt="4">
-            <FormLabel>Amount</FormLabel>
-            <InputGroup>
-              <InputLeftElement
-                pointerEvents="none"
-                color="black"
-                children="Rp"
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <FormControl id="title" isRequired>
+              <FormLabel>Title</FormLabel>
+              <Input
+                placeholder="Title"
+                variant="filled"
+                {...register("title")}
               />
-              <Input placeholder="Enter amount" variant="filled" />
-            </InputGroup>
-          </FormControl>
-          <FormControl id="transactionDate" mt="4">
-            <FormLabel>Transaction Date</FormLabel>
-            <DayPickerInput onDayChange={(day) => console.log(day)} />
-          </FormControl>
-          <FormControl id="transactionCategory" mt="4">
-            <FormLabel>Select Category</FormLabel>
-            <HStack {...group}>
-              {transactionCategory.map((value) => {
-                const radio = getRadioProps({
-                  value,
-                  enterKeyHint: "defaultValue",
-                });
-                return (
-                  <RadioCard key={value} {...radio}>
-                    {value}
-                  </RadioCard>
-                );
-              })}
-            </HStack>
-          </FormControl>
-          <FormControl id="description" mt="4">
-            <FormLabel>Description</FormLabel>
-            <Textarea
-              placeholder="Enter description"
-              variant="filled"
-              size="md"
-            />
-          </FormControl>
-          <Button isFullWidth mt="8" colorScheme="blue">
-            Submit
-          </Button>
+            </FormControl>
+            <FormControl id="amount" isRequired mt="6">
+              <FormLabel>Amount</FormLabel>
+              <InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  color="black"
+                  children="Rp"
+                />
+                <Input
+                  placeholder="Enter amount"
+                  variant="filled"
+                  {...register("amount")}
+                />
+              </InputGroup>
+              <FormHelperText>
+                Fill with negative value if you want to store as outcome
+              </FormHelperText>
+            </FormControl>
+            <FormControl id="transactionDate" mt="6">
+              <FormLabel>Transaction Date</FormLabel>
+              <DayPickerInput onDayChange={(day) => console.log(day)} />
+            </FormControl>
+            <FormControl id="transactionCategory" mt="6">
+              <FormLabel>Select Category</FormLabel>
+              <HStack {...group} spacing="21px" align="stretch">
+                {transactionCategory.map((value) => {
+                  const radio = getRadioProps({
+                    value,
+                    enterKeyHint: "defaultValue",
+                  });
+                  return (
+                    <RadioCard key={value} {...radio}>
+                      {value}
+                    </RadioCard>
+                  );
+                })}
+              </HStack>
+            </FormControl>
+            <FormControl id="description" mt="6">
+              <FormLabel>Description</FormLabel>
+              <Textarea
+                placeholder="Enter description"
+                variant="filled"
+                size="md"
+                {...register("description")}
+              />
+            </FormControl>
+            <Button type="submit" isFullWidth mt="12" colorScheme="blue">
+              Submit
+            </Button>
+          </form>
         </Box>
       </Box>
     </Center>
