@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Center,
@@ -21,7 +21,8 @@ import {
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import { FiArrowLeft } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+import { gql, useMutation } from "@apollo/client";
 
 type RadioCardProps = {
   children?: React.ReactNode;
@@ -67,18 +68,49 @@ interface IAddTransction {
   transactionStatus: string;
 }
 
+const ADD_TRANSACTION = gql`
+  mutation createTransaction($data: TransactionInput!) {
+    createTransaction(transaction: $data) {
+      id
+    }
+  }
+`;
+
 const AddTransaction = (): JSX.Element => {
+  const [category, setCategory] = useState("");
+  const [addTransaction, { loading }] = useMutation(ADD_TRANSACTION);
+
   const transactionCategory = ["Needs", "Wants", "Invest"];
-  const { register, handleSubmit } = useForm<IAddTransction>();
+  const { register, control, handleSubmit } = useForm<IAddTransction>();
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "transactionCategory",
-    defaultValue: "Needs",
-    onChange: console.log,
+    onChange: (nextValue: string) => setCategory(nextValue.toLowerCase()),
   });
   const group = getRootProps();
 
-  const onSubmit = (data: IAddTransction) => console.log(data);
+  const onSubmit = (data: IAddTransction) => {
+    const submitted = {
+      ...data,
+      amount: +data.amount,
+      transactionStatus: data.amount.toString().startsWith("-")
+        ? "outcome"
+        : "income",
+      transactionDate: convertToISODate(data.transactionDate),
+      category,
+    };
+
+    console.log(submitted);
+    // TODO: Handle rejection
+    addTransaction({ variables: { data: submitted } })
+      .then((data) => console.log(`Success with data : ${data}`))
+      .catch((error) => console.log(error));
+  };
+
+  const convertToISODate = (date?: string): string =>
+    date
+      ? new Date(date).toISOString().slice(0, 10)
+      : new Date().toISOString().slice(0, 10);
 
   return (
     <Center fontSize="xl" margin="24" flexDirection="column">
@@ -132,7 +164,17 @@ const AddTransaction = (): JSX.Element => {
             </FormControl>
             <FormControl id="transactionDate" mt="6">
               <FormLabel>Transaction Date</FormLabel>
-              <DayPickerInput onDayChange={(day) => console.log(day)} />
+              <Controller
+                name="transactionDate"
+                control={control}
+                defaultValue=""
+                render={({ field, fieldState, formState }) => (
+                  <DayPickerInput
+                    onDayChange={field.onChange}
+                    placeholder={`${convertToISODate()}`}
+                  />
+                )}
+              />
             </FormControl>
             <FormControl id="transactionCategory" mt="6">
               <FormLabel>Select Category</FormLabel>
@@ -159,7 +201,13 @@ const AddTransaction = (): JSX.Element => {
                 {...register("description")}
               />
             </FormControl>
-            <Button type="submit" isFullWidth mt="12" colorScheme="blue">
+            <Button
+              type="submit"
+              isFullWidth
+              mt="12"
+              colorScheme="blue"
+              isLoading={loading}
+            >
               Submit
             </Button>
           </form>
