@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Center,
   Box,
@@ -8,12 +8,12 @@ import {
   Avatar,
   Button,
   Tooltip,
-} from "@chakra-ui/react";
-import { FiPlus } from "react-icons/fi";
-import { gql, useQuery } from "@apollo/client";
-import { Link } from "react-router-dom";
+} from '@chakra-ui/react';
+import { FiPlus } from 'react-icons/fi';
+import { gql, useQuery } from '@apollo/client';
+import { Link } from 'react-router-dom';
 
-import FallbackProgress from "./FallbackProgress";
+import FallbackProgress from './FallbackProgress';
 
 type RecentTransaction = {
   id: string;
@@ -93,7 +93,7 @@ const Dashboard = () => {
           </Flex>
           <Divider orientation="horizontal" my="4" />
           <Grid gridGap="4" templateColumns="repeat(3, 1fr)">
-            {["Needs", "Wants", "Invest"].map((category, index) => (
+            {['Needs', 'Wants', 'Invest'].map((category, index) => (
               <Flex key={`${index}-${category}`} flexDirection="column">
                 <Box
                   as="h4"
@@ -174,9 +174,9 @@ const Dashboard = () => {
                       as="p"
                       fontWeight="bold"
                       color={
-                        transaction.amount.toString().startsWith("-")
-                          ? "red.500"
-                          : "green.500"
+                        transaction.amount.toString().startsWith('-')
+                          ? 'red.500'
+                          : 'green.500'
                       }
                     >
                       {transaction.amount}

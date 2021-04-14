@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   Box,
   Center,
@@ -17,18 +17,18 @@ import {
   useRadioGroup,
   HStack,
   FormHelperText,
-} from "@chakra-ui/react";
-import DayPickerInput from "react-day-picker/DayPickerInput";
-import { FiArrowLeft } from "react-icons/fi";
-import { Link } from "react-router-dom";
-import { useForm, Controller } from "react-hook-form";
-import { gql, useMutation } from "@apollo/client";
+} from '@chakra-ui/react';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import { FiArrowLeft } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { useForm, Controller } from 'react-hook-form';
+import { gql, useMutation } from '@apollo/client';
 
 type RadioCardProps = {
   children?: React.ReactNode;
 };
 
-const RadioCard = (props: RadioCardProps & UseRadioProps): JSX.Element => {
+const RadioCard = (props: RadioCardProps & UseRadioProps) => {
   const { getInputProps, getCheckboxProps } = useRadio(props);
 
   const input = getInputProps();
@@ -43,12 +43,12 @@ const RadioCard = (props: RadioCardProps & UseRadioProps): JSX.Element => {
         borderWidth="1px"
         borderRadius="md"
         _checked={{
-          bg: "blue.500",
-          color: "white",
-          borderColor: "blue.500",
+          bg: 'blue.500',
+          color: 'white',
+          borderColor: 'blue.500',
         }}
         _focus={{
-          boxShadow: "outline",
+          boxShadow: 'outline',
         }}
         px={5}
         py={3}
@@ -77,14 +77,14 @@ const ADD_TRANSACTION = gql`
 `;
 
 const AddTransaction = (): JSX.Element => {
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState('');
   const [addTransaction, { loading }] = useMutation(ADD_TRANSACTION);
 
-  const transactionCategory = ["Needs", "Wants", "Invest"];
+  const transactionCategory = ['Needs', 'Wants', 'Invest'];
   const { register, control, handleSubmit } = useForm<IAddTransction>();
 
   const { getRootProps, getRadioProps } = useRadioGroup({
-    name: "transactionCategory",
+    name: 'transactionCategory',
     onChange: (nextValue: string) => setCategory(nextValue.toLowerCase()),
   });
   const group = getRootProps();
@@ -93,9 +93,9 @@ const AddTransaction = (): JSX.Element => {
     const submitted = {
       ...data,
       amount: +data.amount,
-      transactionStatus: data.amount.toString().startsWith("-")
-        ? "outcome"
-        : "income",
+      transactionStatus: data.amount.toString().startsWith('-')
+        ? 'outcome'
+        : 'income',
       transactionDate: convertToISODate(data.transactionDate),
       category,
     };
@@ -141,7 +141,7 @@ const AddTransaction = (): JSX.Element => {
               <Input
                 placeholder="Title"
                 variant="filled"
-                {...register("title")}
+                {...register('title')}
               />
             </FormControl>
             <FormControl id="amount" isRequired mt="6">
@@ -155,7 +155,7 @@ const AddTransaction = (): JSX.Element => {
                 <Input
                   placeholder="Enter amount"
                   variant="filled"
-                  {...register("amount")}
+                  {...register('amount')}
                 />
               </InputGroup>
               <FormHelperText>
@@ -182,7 +182,7 @@ const AddTransaction = (): JSX.Element => {
                 {transactionCategory.map((value) => {
                   const radio = getRadioProps({
                     value,
-                    enterKeyHint: "defaultValue",
+                    enterKeyHint: 'defaultValue',
                   });
                   return (
                     <RadioCard key={value} {...radio}>
@@ -198,7 +198,7 @@ const AddTransaction = (): JSX.Element => {
                 placeholder="Enter description"
                 variant="filled"
                 size="md"
-                {...register("description")}
+                {...register('description')}
               />
             </FormControl>
             <Button
