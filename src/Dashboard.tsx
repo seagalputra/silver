@@ -215,7 +215,7 @@ const Dashboard = () => {
           mt="4"
         >
           <Box p="6">
-            {data.transactions.length === 0 ? (
+            {data?.transactions.length === 0 ? (
               <Center flexDirection="column">
                 <Center mt="8" w="full">
                   <EmptyInbox width="25%" />
@@ -240,7 +240,7 @@ const Dashboard = () => {
                 </Box>
               </Center>
             ) : (
-              data.transactions.map(
+              data?.transactions.map(
                 (transaction: RecentTransaction, index: number) => (
                   <Box key={transaction.id}>
                     <Flex
@@ -286,7 +286,7 @@ const Dashboard = () => {
                         {formatCurrency(transaction.amount)}
                       </Box>
                     </Flex>
-                    {index === data.transactions.length - 1 ? null : (
+                    {index === data?.transactions.length - 1 ? null : (
                       <Divider my="6" />
                     )}
                   </Box>
