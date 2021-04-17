@@ -6,7 +6,7 @@ import { TransactionModel } from '../transaction/transaction.schema';
 export class DashboardResolver {
   @Query((returns) => Dashboard)
   async dashboard(): Promise<Dashboard> {
-    const result = await TransactionModel.aggregate([
+    const result: Dashboard[] = await TransactionModel.aggregate([
       {
         $lookup: {
           from: 'transactiondetails',
@@ -28,6 +28,15 @@ export class DashboardResolver {
         },
       },
     ]).exec();
+
+    if (result.length === 0) {
+      return {
+        totalAmount: 0,
+        totalInvest: 0,
+        totalNeeds: 0,
+        totalWants: 0,
+      };
+    }
 
     return {
       totalAmount: result[0].totalAmount,
