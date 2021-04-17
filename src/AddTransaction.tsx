@@ -17,6 +17,7 @@ import {
   useRadioGroup,
   HStack,
   FormHelperText,
+  useToast,
 } from '@chakra-ui/react';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -79,6 +80,7 @@ const ADD_TRANSACTION = gql`
 const AddTransaction = (): JSX.Element => {
   const [category, setCategory] = useState('');
   const [addTransaction, { loading }] = useMutation(ADD_TRANSACTION);
+  const toast = useToast();
 
   const transactionCategory = ['Needs', 'Wants', 'Invest'];
   const { register, control, handleSubmit } = useForm<IAddTransction>();
@@ -100,11 +102,26 @@ const AddTransaction = (): JSX.Element => {
       category,
     };
 
-    console.log(submitted);
-    // TODO: Handle rejection
     addTransaction({ variables: { data: submitted } })
-      .then((data) => console.log(`Success with data : ${data}`))
-      .catch((error) => console.log(error));
+      .then(() =>
+        toast({
+          title: 'Transaction created.',
+          description: "We've successfully added your transaction.",
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        })
+      )
+      .catch(() =>
+        toast({
+          title: 'Failed to add transaction.',
+          description:
+            "Sorry, we've failed to add your transaction. Please try again later.",
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        })
+      );
   };
 
   const convertToISODate = (date?: string): string =>
