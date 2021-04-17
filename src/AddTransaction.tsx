@@ -16,8 +16,12 @@ import {
   UseRadioProps,
   useRadioGroup,
   HStack,
-  FormHelperText,
   useToast,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
 } from '@chakra-ui/react';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -77,8 +81,12 @@ const ADD_TRANSACTION = gql`
   }
 `;
 
-const AddTransaction = (): JSX.Element => {
-  const [category, setCategory] = useState('');
+const AddTransaction = () => {
+  const [tabIndex, setTabIndex] = useState(0);
+  const [formData, setFormData] = useState({
+    category: '',
+    transactionStatus: 'income',
+  });
   const [addTransaction, { loading }] = useMutation(ADD_TRANSACTION);
   const toast = useToast();
 
@@ -87,19 +95,23 @@ const AddTransaction = (): JSX.Element => {
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'transactionCategory',
-    onChange: (nextValue: string) => setCategory(nextValue.toLowerCase()),
+    onChange: (nextValue: string) =>
+      setFormData((currentValue) => {
+        return { ...currentValue, category: nextValue.toLowerCase() };
+      }),
   });
   const group = getRootProps();
 
   const onSubmit = (data: IAddTransction) => {
+    const amount =
+      formData.transactionStatus === 'income' ? data.amount : `-${data.amount}`;
+
     const submitted = {
       ...data,
-      amount: +data.amount,
-      transactionStatus: data.amount.toString().startsWith('-')
-        ? 'outcome'
-        : 'income',
+      amount: +amount,
+      transactionStatus: formData.transactionStatus,
       transactionDate: convertToISODate(data.transactionDate),
-      category,
+      category: formData.category,
     };
 
     addTransaction({ variables: { data: submitted } })
@@ -143,93 +155,174 @@ const AddTransaction = (): JSX.Element => {
           </Box>
         </Flex>
       </Box>
-      <Box
+      <Tabs
         borderRadius="lg"
-        bgColor="white"
+        bgColor="transparent"
         boxShadow="sm"
         maxW="3xl"
         w="full"
         mt="6"
+        isFitted
+        isLazy
+        variant="enclosed"
+        index={tabIndex}
+        onChange={(index) => {
+          setFormData((prevValue) => ({
+            ...prevValue,
+            transactionStatus: index === 0 ? 'income' : 'outcome',
+          }));
+          setTabIndex(index);
+        }}
       >
-        <Box p="6">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <FormControl id="title" isRequired>
-              <FormLabel>Title</FormLabel>
-              <Input
-                placeholder="Title"
-                variant="filled"
-                {...register('title')}
-              />
-            </FormControl>
-            <FormControl id="amount" isRequired mt="6">
-              <FormLabel>Amount</FormLabel>
-              <InputGroup>
-                <InputLeftElement
-                  pointerEvents="none"
-                  color="black"
-                  children="Rp"
-                />
-                <Input
-                  placeholder="Enter amount"
-                  variant="filled"
-                  {...register('amount')}
-                />
-              </InputGroup>
-              <FormHelperText>
-                Fill with negative value if you want to store as outcome
-              </FormHelperText>
-            </FormControl>
-            <FormControl id="transactionDate" mt="6">
-              <FormLabel>Transaction Date</FormLabel>
-              <Controller
-                name="transactionDate"
-                control={control}
-                defaultValue=""
-                render={({ field, fieldState, formState }) => (
-                  <DayPickerInput
-                    onDayChange={field.onChange}
-                    placeholder={`${convertToISODate()}`}
+        <TabList>
+          <Tab _selected={{ color: 'black', bg: 'white' }} bgColor="gray.200">
+            Income
+          </Tab>
+          <Tab _selected={{ color: 'black', bg: 'white' }} bgColor="gray.200">
+            Outcome
+          </Tab>
+        </TabList>
+        <TabPanels>
+          <TabPanel bgColor="white" borderRadius="lg">
+            <Box p="4">
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <FormControl id="title" isRequired>
+                  <FormLabel>Title</FormLabel>
+                  <Input
+                    placeholder="Title"
+                    variant="filled"
+                    {...register('title')}
                   />
-                )}
-              />
-            </FormControl>
-            <FormControl id="transactionCategory" mt="6">
-              <FormLabel>Select Category</FormLabel>
-              <HStack {...group} spacing="21px" align="stretch">
-                {transactionCategory.map((value) => {
-                  const radio = getRadioProps({
-                    value,
-                    enterKeyHint: 'defaultValue',
-                  });
-                  return (
-                    <RadioCard key={value} {...radio}>
-                      {value}
-                    </RadioCard>
-                  );
-                })}
-              </HStack>
-            </FormControl>
-            <FormControl id="description" mt="6">
-              <FormLabel>Description</FormLabel>
-              <Textarea
-                placeholder="Enter description"
-                variant="filled"
-                size="md"
-                {...register('description')}
-              />
-            </FormControl>
-            <Button
-              type="submit"
-              isFullWidth
-              mt="12"
-              colorScheme="blue"
-              isLoading={loading}
-            >
-              Submit
-            </Button>
-          </form>
-        </Box>
-      </Box>
+                </FormControl>
+                <FormControl id="amount" isRequired mt="6">
+                  <FormLabel>Amount</FormLabel>
+                  <InputGroup>
+                    <InputLeftElement
+                      pointerEvents="none"
+                      color="black"
+                      children="Rp"
+                    />
+                    <Input
+                      placeholder="Enter amount"
+                      variant="filled"
+                      {...register('amount')}
+                    />
+                  </InputGroup>
+                </FormControl>
+                <FormControl id="transactionDate" mt="6">
+                  <FormLabel>Transaction Date</FormLabel>
+                  <Controller
+                    name="transactionDate"
+                    control={control}
+                    defaultValue=""
+                    render={({ field, fieldState, formState }) => (
+                      <DayPickerInput
+                        onDayChange={field.onChange}
+                        placeholder={`${convertToISODate()}`}
+                      />
+                    )}
+                  />
+                </FormControl>
+                <FormControl id="description" mt="6">
+                  <FormLabel>Description</FormLabel>
+                  <Textarea
+                    placeholder="Enter description"
+                    variant="filled"
+                    size="md"
+                    {...register('description')}
+                  />
+                </FormControl>
+                <Button
+                  type="submit"
+                  isFullWidth
+                  mt="8"
+                  colorScheme="blue"
+                  isLoading={loading}
+                >
+                  Submit
+                </Button>
+              </form>
+            </Box>
+          </TabPanel>
+          <TabPanel bgColor="white" borderRadius="lg">
+            <Box p="4">
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <FormControl id="title" isRequired>
+                  <FormLabel>Title</FormLabel>
+                  <Input
+                    placeholder="Title"
+                    variant="filled"
+                    {...register('title')}
+                  />
+                </FormControl>
+                <FormControl id="amount" isRequired mt="6">
+                  <FormLabel>Amount</FormLabel>
+                  <InputGroup>
+                    <InputLeftElement
+                      pointerEvents="none"
+                      color="black"
+                      children="Rp"
+                    />
+                    <Input
+                      placeholder="Enter amount"
+                      variant="filled"
+                      {...register('amount')}
+                    />
+                  </InputGroup>
+                </FormControl>
+                <FormControl id="transactionDate" mt="6">
+                  <FormLabel>Transaction Date</FormLabel>
+                  <Controller
+                    name="transactionDate"
+                    control={control}
+                    defaultValue=""
+                    render={({ field, fieldState, formState }) => (
+                      <DayPickerInput
+                        onDayChange={field.onChange}
+                        placeholder={`${convertToISODate()}`}
+                      />
+                    )}
+                  />
+                </FormControl>
+                <FormControl id="transactionCategory" mt="6">
+                  <FormLabel>Select Category</FormLabel>
+                  <HStack {...group} spacing="21px" align="stretch">
+                    {transactionCategory.map((value) => {
+                      const radio = getRadioProps({
+                        value,
+                        enterKeyHint: 'defaultValue',
+                      });
+                      return (
+                        <RadioCard key={value} {...radio}>
+                          {value}
+                        </RadioCard>
+                      );
+                    })}
+                  </HStack>
+                </FormControl>
+                <FormControl id="description" mt="6">
+                  <FormLabel>Description</FormLabel>
+                  <Textarea
+                    placeholder="Enter description"
+                    variant="filled"
+                    size="md"
+                    {...register('description')}
+                  />
+                </FormControl>
+                <Button
+                  type="submit"
+                  isFullWidth
+                  mt="8"
+                  colorScheme="blue"
+                  isLoading={loading}
+                >
+                  Submit
+                </Button>
+              </form>
+            </Box>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </Center>
   );
 };
