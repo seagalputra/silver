@@ -1,7 +1,7 @@
-import { ObjectType, Field, ID, Int, InputType } from "type-graphql";
-import { prop as Property, getModelForClass, Ref } from "@typegoose/typegoose";
+import { ObjectType, Field, ID, Int, InputType } from 'type-graphql';
+import { prop as Property, getModelForClass, Ref } from '@typegoose/typegoose';
 
-@ObjectType({ description: "A detail of the transaction" })
+@ObjectType({ description: 'A detail of the transaction' })
 export class TransactionDetail {
   @Field(() => ID)
   id!: String;
@@ -24,13 +24,13 @@ export class TransactionDetail {
 
   @Field({
     description:
-      "A status for the transaction. It can be income, outcome or waiting",
+      'A status for the transaction. It can be income, outcome or waiting',
   })
-  @Property({ default: "waiting", required: true })
+  @Property({ default: 'waiting', required: true })
   transactionStatus!: String;
 }
 
-@ObjectType({ description: "The transaction schema" })
+@ObjectType({ description: 'The transaction schema' })
 export class Transaction {
   @Field(() => ID)
   id!: String;
@@ -68,14 +68,14 @@ export class TransactionInput {
 
   @Field({
     description:
-      "A status for the transaction. It can be income, outcome or waiting",
+      'A status for the transaction. It can be income, outcome or waiting',
   })
   transactionStatus!: String;
 
   @Field({
     nullable: true,
     description:
-      "A category for the transcation. It can be (needs, wants, or invest)",
+      'A category for the transcation. It can be (needs, wants, or invest)',
   })
   category?: String;
 }

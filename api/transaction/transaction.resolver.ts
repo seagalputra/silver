@@ -1,27 +1,27 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import {
   Transaction,
   TransactionDetailModel,
   TransactionDetail,
   TransactionInput,
   TransactionModel,
-} from "./transaction.schema";
+} from './transaction.schema';
 
 @Resolver((of) => Transaction)
 export class TransactionResolver {
   @Query((returns) => [Transaction])
   async transactions(): Promise<Transaction[]> {
-    return TransactionModel.find().populate("transactionDetail");
+    return TransactionModel.find().populate('transactionDetail');
   }
 
   @Query((returns) => Transaction)
-  async transaction(@Arg("id") id: String): Promise<Transaction | null> {
-    return TransactionModel.findOne({ _id: id }).populate("transactionDetail");
+  async transaction(@Arg('id') id: String): Promise<Transaction | null> {
+    return TransactionModel.findOne({ _id: id }).populate('transactionDetail');
   }
 
   @Mutation((returns) => Transaction)
   async createTransaction(
-    @Arg("transaction") transaction: TransactionInput
+    @Arg('transaction') transaction: TransactionInput
   ): Promise<Transaction> {
     const splittedAmount = this.splitAmount({
       amount: transaction.amount,
@@ -58,7 +58,7 @@ export class TransactionResolver {
     status: string;
     category: string | any;
   }) {
-    return status === "income"
+    return status === 'income'
       ? {
           needs: amount * 0.5,
           wants: amount * 0.4,

@@ -6,9 +6,10 @@ import { GraphQLSchema } from 'graphql';
 import { connect, Mongoose } from 'mongoose';
 
 import { TransactionResolver } from './transaction/transaction.resolver';
+import { DashboardResolver } from './dashboard/dashboard.resolver';
 
 const schema: GraphQLSchema = buildSchemaSync({
-  resolvers: [TransactionResolver],
+  resolvers: [TransactionResolver, DashboardResolver],
   validate: false,
 });
 const cors = micro();

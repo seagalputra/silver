@@ -11,7 +11,7 @@ const AppRoute = (): JSX.Element => (
     <Suspense
       fallback={
         <Center minHeight="100vh">
-          <FallbackProgress />
+          <FallbackProgress size="xl" />
         </Center>
       }
     >
