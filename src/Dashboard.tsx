@@ -8,6 +8,8 @@ import {
   Avatar,
   Button,
   Tooltip,
+  Skeleton,
+  VStack,
 } from '@chakra-ui/react';
 import { FiPlus } from 'react-icons/fi';
 import { gql, useQuery } from '@apollo/client';
@@ -64,26 +66,28 @@ const Dashboard = () => {
       >
         Hello, how are you today? 👋
       </Box>
-      {loading ? (
-        <Box mt="6">
-          <FallbackProgress size="xl" />
-        </Box>
-      ) : (
-        <Box
-          borderRadius="lg"
-          bgColor="white"
-          boxShadow="sm"
-          maxW="3xl"
-          w="full"
-          mt="6"
-        >
-          <Box p="6">
+
+      <Box
+        borderRadius="lg"
+        bgColor="white"
+        boxShadow="sm"
+        maxW="3xl"
+        w="full"
+        mt="6"
+      >
+        <Box p="6">
+          {loading ? (
+            <VStack spacing="2" align="stretch">
+              <Skeleton height="5" />
+              <Skeleton height="10" />
+            </VStack>
+          ) : (
             <Flex
               flexDirection="row"
               alignItems="center"
               justifyContent="space-between"
             >
-              <Flex flexDirection="column">
+              <Flex flexDirection="column" mr="2">
                 <Box
                   as="h4"
                   lineHeight="tight"
@@ -99,7 +103,7 @@ const Dashboard = () => {
                   fontWeight="bold"
                   fontSize="3xl"
                 >
-                  {formatCurrency(data.dashboard.totalAmount)}
+                  {formatCurrency(data?.dashboard.totalAmount)}
                 </Box>
               </Flex>
               <Tooltip hasArrow label="Add transaction" placement="right">
@@ -116,8 +120,15 @@ const Dashboard = () => {
                 </Link>
               </Tooltip>
             </Flex>
-            <Divider orientation="horizontal" my="4" />
-            <Grid gridGap="4" templateColumns="repeat(3, 1fr)">
+          )}
+          <Divider orientation="horizontal" my="4" />
+          <Grid gridGap="4" templateColumns="repeat(3, 1fr)">
+            {loading ? (
+              <VStack spacing="2" align="stretch">
+                <Skeleton height="5" />
+                <Skeleton height="7" />
+              </VStack>
+            ) : (
               <Flex flexDirection="column">
                 <Box
                   as="h4"
@@ -129,9 +140,16 @@ const Dashboard = () => {
                   Needs
                 </Box>
                 <Box as="h3" lineHeight="tight" fontWeight="bold" fontSize="xl">
-                  {formatCurrency(data.dashboard.totalNeeds)}
+                  {formatCurrency(data?.dashboard.totalNeeds)}
                 </Box>
               </Flex>
+            )}
+            {loading ? (
+              <VStack spacing="2" align="stretch">
+                <Skeleton height="5" />
+                <Skeleton height="7" />
+              </VStack>
+            ) : (
               <Flex flexDirection="column">
                 <Box
                   as="h4"
@@ -143,9 +161,16 @@ const Dashboard = () => {
                   Wants
                 </Box>
                 <Box as="h3" lineHeight="tight" fontWeight="bold" fontSize="xl">
-                  {formatCurrency(data.dashboard.totalWants)}
+                  {formatCurrency(data?.dashboard.totalWants)}
                 </Box>
               </Flex>
+            )}
+            {loading ? (
+              <VStack spacing="2" align="stretch">
+                <Skeleton height="5" />
+                <Skeleton height="7" />
+              </VStack>
+            ) : (
               <Flex flexDirection="column">
                 <Box
                   as="h4"
@@ -157,13 +182,13 @@ const Dashboard = () => {
                   Invest
                 </Box>
                 <Box as="h3" lineHeight="tight" fontWeight="bold" fontSize="xl">
-                  {formatCurrency(data.dashboard.totalInvest)}
+                  {formatCurrency(data?.dashboard.totalInvest)}
                 </Box>
               </Flex>
-            </Grid>
-          </Box>
+            )}
+          </Grid>
         </Box>
-      )}
+      </Box>
       <Box
         maxW="3xl"
         as="h4"
